@@ -1,2 +1,2 @@
 # FLaAL
-A project to create a LaTeX Package, which provides an easy creation of automatons for formal Languages.
+Ein Projekt zur Erstellung eines LaTeX-Packages, welches eine einfache Handhabung zur Erstellung von Automaten für Formale Sprachen mitbringt.
