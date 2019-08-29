@@ -1,0 +1,34 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{FLaAL}
+
+\makeindex
+
+\title{FLaAL Example}
+\author{Jonas Kappa}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\newpage
+\begin{figure}
+    \centering
+    \begin{tg}[nea]
+        \state[start]{q0}{0}{0}
+        \state{q1}{20}{40}
+        \state[final]{q2}{40}{0}
+        
+        \transition{q0}{q1}{;a;b}
+        \transition[line=left]{q0}{q2}{;a;b;c;}
+        \transition[line=left]{q2}{q0}{;a;b;c;}
+        \transition{q1}{q1}{;a;b;c}
+        \transition{q2}{q2}{;a;b}
+        \transition[label=right]{q2}{q1}{;a;b;c;d}
+    \end{tg}
+    \caption{Tikzgraph}
+    \label{graph:first_graph}
+\end{figure}
+
+\end{document}

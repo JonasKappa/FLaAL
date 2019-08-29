@@ -1,0 +1,255 @@
+%%Identification
+%%The package identifies itself and the LaTeX version needed
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{FLaAL}[2019/08/27 FLaAL package]
+
+%%Requeiried packages and preliminary definitions, needed by the options
+\RequirePackage{xstring}
+\RequirePackage{tikz}
+\RequirePackage{fp}
+\RequirePackage{xkeyval}
+\RequirePackage{xparse}
+\RequirePackage{ifthen}
+
+%%This parts handles the options passed to the package.
+\ProcessOptions\relax
+
+%%Body of the package, most of the declarations appear here.
+
+\newcommand{\test@empty}{xxx}
+
+\ExplSyntaxOn
+    
+\NewDocumentCommand{\dea@label@processing}{O{;}m}
+{
+    \dea_make:nn {#1} {#2}
+}
+
+\cs_new_protected:Npn \dea_make:nn #1 #2
+{
+    \seq_set_split:Nnn \l_dea_args_seq { #1 } { #2 }
+    \seq_pop_left:NN \l_dea_args_seq \l_dea_temp_tl
+    \l_dea_temp_tl
+    \seq_map_inline:Nn \l_dea_args_seq {,\space ##1}
+}
+
+\seq_new:N \l_dea_args_seq
+\tl_new:N \l_dea_temp_tl
+
+\ExplSyntaxOff
+
+\ExplSyntaxOn
+    
+\NewDocumentCommand{\nea@label@processing}{O{;}m}
+{
+    \nea_make:nn {#1} {#2}
+}
+
+\cs_new_protected:Npn \nea_make:nn #1 #2
+{
+    \seq_set_split:Nnn \l_nea_args_seq { #1 } { #2 }
+    \seq_pop_left:NN \l_nea_args_seq \l_nea_temp_tl
+    \StrLen{\l_nea_temp_tl}[\nealength]
+    \ifthenelse{\equal{\nealength}{0}}{
+        $\epsilon$
+    }{
+        \l_nea_temp_tl
+    }
+    \seq_map_inline:Nn \l_nea_args_seq {,\space ##1}
+}
+
+\seq_new:N \l_nea_args_seq
+\tl_new:N \l_nea_temp_tl
+
+\ExplSyntaxOff
+
+
+\newcommand{\startState}[3]{
+    \FPset\x{0}
+    \FPadd{\x}{-10}{#2}
+    \FPset\y{0}
+    \FPadd{\y}{}{#3}
+    \node (#1) [state] at (#2mm, #3mm) {#1};
+    \draw [arrow] (\x mm, \y mm) -- node[anchor=east,xshift=-0.3cm] {Start} (#1);
+}
+
+\newcommand{\normalState}[3]{
+    \node (#1) [state] at (#2mm, #3mm) {#1};
+}
+
+\newcommand{\finalState}[3]{
+    \node (#1) [state] at (#2mm, #3mm) {};
+    \node (#1finalstate)[smallerstate, right of=#1, xshift=-1cm, yshift=0] {#1};
+}
+
+
+\newenvironment{tg}[1][dea]
+{
+    \IfStrEqCase{#1}{
+        {dea}{}%
+        {nea}{}%
+        {dka}{}%
+        {nka}{}%
+        {tm}{}%
+    }[\PackageError{FLaAL}{#1 is no valid option for tg environment. Use one of dea, nea, dka, nka or tm};]
+    \tikzstyle{state} = [circle, minimum width=1cm, text centered, draw=black, fill=white]
+    \tikzstyle{smallerstate} = [circle, minimum width=0.8cm, text centered, draw=black, fill=white]
+    \tikzstyle{arrow} = [thick,->,>=stealth]
+    \newcommand{\test}{
+        \filldraw[color=red!60, fill=red!5, very thick](-1,0) circle (1.5);
+        \fill[blue!50] (2.5,0) ellipse (1.5 and 0.5);
+        \draw[ultra thick, ->] (6.5,0) arc (0:220:1);
+    }
+    \newcommand{\state}[4][normal]{
+        \IfStrEqCase{##1}{
+            {start}{
+                \startState{##2}{##3}{##4}
+            }%
+            {normal}{
+                \normalState{##2}{##3}{##4}
+            }%
+            {final}{
+                \finalState{##2}{##3}{##4}
+            }%
+        }[\PackageWarning{FLaAL}{##1 is no valid option. Defaults to normal}{}\normalState{##2}{##3}{##4}]
+    }
+    
+    \newcommand{\t@line}{straight}
+    \newcommand{\t@label}{south}
+    
+    \define@key{trans}{line}{
+        \IfStrEqCase{##1}{
+            {straight}{
+                \renewcommand{\t@line}{straight}
+            }%
+            {left}{
+                \renewcommand{\t@line}{bend left}
+            }%
+            {right}{
+                \renewcommand{\t@line}{bend right}
+            }%
+            {top}{
+                \renewcommand{\t@line}{loop above}
+            }%
+            {bot}{
+                \renewcommand{\t@line}{loop below}
+            }%
+            {start}{
+                \renewcommand{\t@line}{start}
+            }%
+        }[\PackageWarning{FLaAL}{##1 is no valid option for line. Please use left, right, straight, top or bot}{}\renewcommand{\t@line}{start}]
+    }
+    \define@key{trans}{label}{
+        \IfStrEqCase{##1}{
+            {top}{
+                \renewcommand{\t@label}{south}
+            }%
+            {bot}{
+                \renewcommand{\t@label}{north}
+            }%
+            {left}{
+                \renewcommand{\t@label}{east}
+            }%
+            {right}{
+                \renewcommand{\t@label}{west}
+            }%
+            {midway}{
+                \renewcommand{\t@label}{midway}  
+            }%
+        }[\PackageWarning{FLaAL}{##1 is no valid option for label. Please choose one of top, bot, left or right}{}\renewcommand{\t@label}{south}]
+    }
+    
+    % 1 = {anchor for text; default= south (means above)}
+    % 2 = {direction of loop, or bending of transition; default= above when loop, and left when transition}
+    % 3 = start
+    % 4 = destination
+    % 5 = labels
+    \newcommand{\transition}[4][line=start,label=midway]
+    {
+        \IfSubStr{##1}{line}{
+            \IfSubStr{##1}{label}{
+                % line und label sind drin
+                \setkeys{trans}{##1}
+            }{
+                % line aber kein label
+                \setkeys{trans}{##1,label=midway}
+            }
+        }{
+            \IfSubStr{##1}{label}{
+                % label aber kein line
+                \setkeys{trans}{line=start,##1}
+            }{
+                % kein line und kein label
+                \setkeys{trans}{line=start,label=midway}
+            }
+        }
+        
+        % If start and destination are equal
+        \ifthenelse{\equal{##2}{##3}}
+        {
+            % selftransition
+            \IfStrEqCase{\t@line}{
+                {bend left}{
+                    \renewcommand{\t@line}{loop left}
+                }%
+                {bend right}{
+                    \renewcommand{\t@line}{loop right}
+                }%
+                {straight}{
+                    \PackageWarning{FLaAL}{straight is not a valid option for a self transition}{}
+                    \renewcommand{\t@line}{loop above}
+                }%
+                {start}{
+                    \renewcommand{\t@line}{loop above}
+                }%
+            }
+        }
+        {
+            % normal transitions
+            \IfStrEqCase{\t@line}{
+                {loop above}{
+                    \PackageWarning{FLaAL}{top is not a valid option for a normal transition}{}
+                    \renewcommand{\t@line}{}
+                }%
+                {loop below}{
+                    \PackageWarning{FLaAL}{bot is not a valid option for a normal transition}{}
+                    \renewcommand{\t@line}{}
+                }%
+                {straight}{
+                    \renewcommand{\t@line}{}
+                }%
+                {start}{
+                    \renewcommand{\t@line}{}
+                }%
+            }
+        }
+        % \path (##2) edge [\t@line] node[anchor=\t@label] %
+        \ifthenelse{\equal{\t@label}{midway}}{
+            \path (##2) edge [\t@line] node [\t@label] %
+            {%
+                \IfStrEqCase{#1}{
+                    {dea}{\dea@label@processing{##4}}
+                    {nea}{\nea@label@processing{##4}}
+                    {dka}{}
+                    {nka}{}
+                    {tm}{}
+                } %
+            } (##3);
+        }{
+            \path (##2) edge [\t@line] node [anchor=\t@label] %
+            {%
+                \IfStrEqCase{#1}{
+                    {dea}{\dea@label@processing{##4}}
+                    {nea}{\nea@label@processing{##4}}
+                    {dka}{}
+                    {nka}{}
+                    {tm}{}
+                } %
+            } (##3);
+        }
+    }
+    \begin{tikzpicture}[->,>=stealth,auto]
+}
+{
+    \end{tikzpicture}
+}
