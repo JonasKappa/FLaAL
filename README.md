@@ -5,7 +5,7 @@ Dieses Projekt läuft im Rahmen meiner Bachelor-Thesis.
 
 ## Dokumentation
 
-Die Dokumentation findest du im [Wiki](https://github.com/TrueRushHunt3r/FLaAL/wiki).
+Die Dokumentation findest du im [Wiki](https://github.com/TrueRushHunt3r/FLaAL/wiki/Dokumentation).
 
 ## Lizenz
 
