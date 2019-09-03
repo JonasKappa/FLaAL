@@ -51,7 +51,7 @@
     \seq_pop_left:NN \l_nea_args_seq \l_nea_temp_tl
     \StrLen{\l_nea_temp_tl}[\nealength]
     \ifthenelse{\equal{\nealength}{0}}{
-        $\epsilon$
+        $\varepsilon$
     }{
         \l_nea_temp_tl
     }
@@ -83,7 +83,7 @@
 }
 
 
-\newenvironment{tg}[1][dea]
+\newenvironment{transitiongraph}[1][dea]
 {
     \IfStrEqCase{#1}{
         {dea}{}%

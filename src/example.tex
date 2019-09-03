@@ -15,18 +15,18 @@
 \newpage
 \begin{figure}
     \centering
-    \begin{tg}[nea]
+    \begin{transitiongraph}[nea]
         \state[start]{q0}{0}{0}
         \state{q1}{20}{40}
         \state[final]{q2}{40}{0}
         
-        \transition{q0}{q1}{;a;b}
+        \transition{q0}{q1}{a;b}
         \transition[line=left]{q0}{q2}{;a;b;c;}
-        \transition[line=left]{q2}{q0}{;a;b;c;}
-        \transition{q1}{q1}{;a;b;c}
-        \transition{q2}{q2}{;a;b}
-        \transition[label=right]{q2}{q1}{;a;b;c;d}
-    \end{tg}
+        \transition[line=left]{q2}{q0}{a;b;c;}
+        \transition{q1}{q1}{a;b;c}
+        \transition{q2}{q2}{a;b}
+        \transition[label=right]{q2}{q1}{a;b;c;d}
+    \end{transitiongraph}
     \caption{Tikzgraph}
     \label{graph:first_graph}
 \end{figure}
