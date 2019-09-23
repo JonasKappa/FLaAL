@@ -56,11 +56,11 @@
         \state{q2}{25}{45}
         \state[final]{q1}{50}{0}
         
-        \transition{q0}{q1}{\|,a,$\varepsilon$;\|,c,$\varepsilon$}
+        \transition{q0}{q1}{\|,a,;\|,c,}
         \transition{q0}{q2}{\|,b,\|\|\|}
-        \transition{q2}{q1}{\|,a,$\varepsilon$;\|,b,\|\|\|}
-        \transition{q2}{q2}{\|,c,$\varepsilon$}
-        \transition[line=right]{q1}{q1}{\|,a,$\varepsilon$;\|,b,\|\|\|;\|,c,$\varepsilon$}
+        \transition{q2}{q1}{\|,a,;\|,b,\|\|\|}
+        \transition{q2}{q2}{\|,c,}
+        \transition[line=right]{q1}{q1}{\|,a,;\|,b,\|\|\|;\|,c,}
     \end{transitiongraph}
     \caption{DKA}
     \label{graph:dka}

@@ -91,8 +91,9 @@
     \seq_pop_left:NN \l_dka_ele_args_seq \l_dka_ele_second_tl
     % pop third element
     \seq_pop_left:NN \l_dka_ele_args_seq \l_dka_ele_third_tl
+    \StrLen{\l_dka_ele_third_tl}[\dkathirdlength]
     % result is (first,second):third
-    (\l_dka_ele_first_tl,\l_dka_ele_second_tl):\l_dka_ele_third_tl
+    (\l_dka_ele_first_tl,\l_dka_ele_second_tl):\int_compare:nTF {\dkathirdlength=0}{$\varepsilon$}{\l_dka_ele_third_tl}
     
     % clearing the processed list, to be ready to be filled again
     \seq_clear:N \l_dka_proc_args
@@ -106,8 +107,9 @@
         \seq_pop_left:NN \l_dka_ele_args_seq \l_dka_ele_second_tl
         % pop third element
         \seq_pop_left:NN \l_dka_ele_args_seq \l_dka_ele_third_tl
+        \StrLen{\l_dka_ele_third_tl}[\dkathirdlength]
         % adding labels to the proccessed labels
-        \seq_put_right:Nx \l_dka_proc_args {(\l_dka_ele_first_tl,\l_dka_ele_second_tl):\l_dka_ele_third_tl}
+        \seq_put_right:Nx \l_dka_proc_args {(\l_dka_ele_first_tl,\l_dka_ele_second_tl):\int_compare:nTF {\dkathirdlength=0}{$\varepsilon$}{\l_dka_ele_third_tl}}
     }
     % print it below each other
     \seq_map_inline:Nn \l_dka_proc_args {\\##1}
