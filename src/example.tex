@@ -53,12 +53,28 @@
     \centering
     \begin{transitiongraph}[dka]
         \state[start]{q0}{0}{0}
+        \state{q2}{25}{45}
         \state[final]{q1}{50}{0}
         
-        \transition{q0}{q1}{\|,a,$\varepsilon$;\|,b,\|\|\|;\|,c,$\varepsilon$}
+        \transition{q0}{q1}{\|,a,$\varepsilon$;\|,c,$\varepsilon$}
+        \transition{q0}{q2}{\|,b,\|\|\|}
+        \transition{q2}{q1}{\|,a,$\varepsilon$;\|,b,\|\|\|}
+        \transition{q2}{q2}{\|,c,$\varepsilon$}
+        \transition[line=right]{q1}{q1}{\|,a,$\varepsilon$;\|,b,\|\|\|;\|,c,$\varepsilon$}
     \end{transitiongraph}
     \caption{DKA}
     \label{graph:dka}
+\end{figure}
+\begin{figure}
+    \centering
+    \begin{transitiongraph}[nka]
+        \state[start]{q0}{0}{0}
+        \state[final]{q1}{50}{0}
+        
+        \transition{q0}{q1}{\|,a,;\|,b,;\|,,\|}
+    \end{transitiongraph}
+    \caption{NKA}
+    \label{graph:nka}
 \end{figure}
 
 \end{document}

@@ -80,27 +80,11 @@
 {
     % split by semicolon
     \seq_set_split:Nnn \l_dka_args_seq { #1 } { #2 }
-    % % pop first element
-    % \seq_pop_left:NN \l_dka_args_seq \l_dka_temp_tl
+    % pop first element
+    \seq_pop_left:NN \l_dka_args_seq \l_dka_temp_tl
     
-    % % split first element by comma
-    % \seq_set_split:NnV \l_dka_ele_args_seq {,} {\l_dka_temp_tl}
-    % % pop first element
-    % \seq_pop_left:NN \l_dka_ele_args_seq \l_dka_ele_first_tl
-    % % pop second element
-    % \seq_pop_left:NN \l_dka_ele_args_seq \l_dka_ele_second_tl
-    % % pop third element
-    % \seq_pop_left:NN \l_dka_ele_args_seq \l_dka_ele_third_tl
-    % % result is (first,second):third
-    % (\l_dka_ele_first_tl,\l_dka_ele_second_tl):\l_dka_ele_third_tl
-    
-    \int_zero:N\l_dka_ele_index
-    \int_set:Nn \l_dka_args_length {\seq_count:N \l_dka_args_seq}
-    
-    \seq_map_inline:Nn \l_dka_args_seq {
-    \int_add:Nn \l_dka_ele_index {1}
     % split first element by comma
-    \seq_set_split:Nnn \l_dka_ele_args_seq {,} {##1}
+    \seq_set_split:NnV \l_dka_ele_args_seq {,} {\l_dka_temp_tl}
     % pop first element
     \seq_pop_left:NN \l_dka_ele_args_seq \l_dka_ele_first_tl
     % pop second element
@@ -109,27 +93,97 @@
     \seq_pop_left:NN \l_dka_ele_args_seq \l_dka_ele_third_tl
     % result is (first,second):third
     (\l_dka_ele_first_tl,\l_dka_ele_second_tl):\l_dka_ele_third_tl
-    % \ifthenelse{\equal{\int_use:N \l_dka_ele_index}{\seq_count:N \l_dka_args_seq}}{}{\\}
-    % \int_use:N \l_dka_ele_index
-    % \seq_count:N \l_dka_args_seq
-    % \int_use:N \l_dka_ele_index
-    % \seq_count:N \l_dka_args_seq
-    % \int_use:N \l_dka_args_length
-    \int_compare:nNnF {\l_dka_ele_index}={\l_dka_args_length}{\\}
+    
+    % clearing the processed list, to be ready to be filled again
+    \seq_clear:N \l_dka_proc_args
+    % going trough all remaining labels
+    \seq_map_inline:Nn \l_dka_args_seq {
+        % split first element by comma
+        \seq_set_split:Nnn \l_dka_ele_args_seq {,} {##1}
+        % pop first element
+        \seq_pop_left:NN \l_dka_ele_args_seq \l_dka_ele_first_tl
+        % pop second element
+        \seq_pop_left:NN \l_dka_ele_args_seq \l_dka_ele_second_tl
+        % pop third element
+        \seq_pop_left:NN \l_dka_ele_args_seq \l_dka_ele_third_tl
+        % adding labels to the proccessed labels
+        \seq_put_right:Nx \l_dka_proc_args {(\l_dka_ele_first_tl,\l_dka_ele_second_tl):\l_dka_ele_third_tl}
     }
+    % print it below each other
+    \seq_map_inline:Nn \l_dka_proc_args {\\##1}
+    
 }
 
 \seq_new:N \l_dka_ele_args_seq
 \seq_new:N \l_dka_args_seq
+\seq_new:N \l_dka_proc_args
 \tl_new:N \l_dka_temp_tl
 \tl_new:N \l_dka_ele_first_tl
 \tl_new:N \l_dka_ele_second_tl
 \tl_new:N \l_dka_ele_third_tl
-\int_new:N \l_dka_ele_index
-\int_new:N \l_dka_args_length
 
 \ExplSyntaxOff
 
+% Label Processing for
+% NKA
+\ExplSyntaxOn
+    
+\NewDocumentCommand{\nka@label@processing}{O{;}m}
+{
+    \nka_make:nn {#1} {#2}
+}
+
+\cs_new_protected:Npn \nka_make:nn #1 #2
+{
+    % split by semicolon
+    \seq_set_split:Nnn \l_nka_args_seq { #1 } { #2 }
+    % pop first element
+    \seq_pop_left:NN \l_nka_args_seq \l_nka_temp_tl
+    
+    % split first element by comma
+    \seq_set_split:NnV \l_nka_ele_args_seq {,} {\l_nka_temp_tl}
+    % pop first element
+    \seq_pop_left:NN \l_nka_ele_args_seq \l_nka_ele_first_tl
+    % pop second element
+    \seq_pop_left:NN \l_nka_ele_args_seq \l_nka_ele_second_tl
+    \StrLen{\l_nka_ele_second_tl}[\nkaseclength]
+    % pop third element
+    \seq_pop_left:NN \l_nka_ele_args_seq \l_nka_ele_third_tl
+    \StrLen{\l_nka_ele_third_tl}[\nkathirdlength]
+    % result is (first,second):third
+    (\l_nka_ele_first_tl,\int_compare:nTF {\nkaseclength=0}{$\varepsilon$}{\l_nka_ele_second_tl}):\int_compare:nTF {\nkathirdlength=0}{$\varepsilon$}{\l_nka_ele_third_tl}
+    
+    % clearing the processed list, to be ready to be filled again
+    \seq_clear:N \l_nka_proc_args
+    % going trough all remaining labels
+    \seq_map_inline:Nn \l_nka_args_seq {
+        % split first element by comma
+        \seq_set_split:Nnn \l_nka_ele_args_seq {,} {##1}
+        % pop first element
+        \seq_pop_left:NN \l_nka_ele_args_seq \l_nka_ele_first_tl
+        % pop second element
+        \seq_pop_left:NN \l_nka_ele_args_seq \l_nka_ele_second_tl
+        \StrLen{\l_nka_ele_second_tl}[\nkaseclength]
+        % pop third element
+        \seq_pop_left:NN \l_nka_ele_args_seq \l_nka_ele_third_tl
+        \StrLen{\l_nka_ele_third_tl}[\nkathirdlength]
+        % adding labels to the proccessed labels
+        \seq_put_right:Nx \l_nka_proc_args {(\l_nka_ele_first_tl,\int_compare:nTF {\nkaseclength=0}{$\varepsilon$}{\l_nka_ele_second_tl} ):\int_compare:nTF {\nkathirdlength=0}{$\varepsilon$}{\l_nka_ele_third_tl}}
+    }
+    % print it below each other
+    \seq_map_inline:Nn \l_nka_proc_args {\\##1}
+    
+}
+
+\seq_new:N \l_nka_ele_args_seq
+\seq_new:N \l_nka_args_seq
+\seq_new:N \l_nka_proc_args
+\tl_new:N \l_nka_temp_tl
+\tl_new:N \l_nka_ele_first_tl
+\tl_new:N \l_nka_ele_second_tl
+\tl_new:N \l_nka_ele_third_tl
+
+\ExplSyntaxOff
 
 \newcommand{\startState}[3]{
     \FPset\x{0}
@@ -296,7 +350,7 @@
                     {dea}{\dea@label@processing{##4}}
                     {nea}{\nea@label@processing{##4}}
                     {dka}{\dka@label@processing{##4}}
-                    {nka}{}
+                    {nka}{\nka@label@processing{##4}}
                     {tm}{}
                 } %
             } (##3);
@@ -307,7 +361,7 @@
                     {dea}{\dea@label@processing{##4}}
                     {nea}{\nea@label@processing{##4}}
                     {dka}{\dka@label@processing{##4}}
-                    {nka}{}
+                    {nka}{\nka@label@processing{##4}}
                     {tm}{}
                 } %
             } (##3);
