@@ -56,11 +56,11 @@
         \state{q2}{25}{45}
         \state[final]{q1}{50}{0}
         
-        \transition{q0}{q1}{\|,a,;\|,c,}
+        \transition{q0}{q1}{\|,a,\e;\|,c,\e}
         \transition{q0}{q2}{\|,b,\|\|\|}
         \transition{q2}{q1}{\|,a,;\|,b,\|\|\|}
         \transition{q2}{q2}{\|,c,}
-        \transition[line=right]{q1}{q1}{\|,a,;\|,b,\|\|\|;\|,c,}
+        \transition[line=right]{q1}{q1}{\|,a,\e;\|,b,\|\|\|;\|,c,}
     \end{transitiongraph}
     \caption{DKA}
     \label{graph:dka}
@@ -71,10 +71,22 @@
         \state[start]{q0}{0}{0}
         \state[final]{q1}{50}{0}
         
-        \transition{q0}{q1}{\|,a,;\|,b,;\|,,\|}
+        \transition{q0}{q1}{\|,a,\e;\|,b,\e;\|,,\|}
     \end{transitiongraph}
     \caption{NKA}
     \label{graph:nka}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{transitiongraph}[tm]
+        \state[start]{q0}{0}{0}
+        \state[final]{q1}{50}{0}
+        
+        \transition{q0}{q1}{\$,0,R;0,1,L;1,0,N}
+    \end{transitiongraph}
+    \caption{TM}
+    \label{graph:tm}
 \end{figure}
 
 \end{document}
