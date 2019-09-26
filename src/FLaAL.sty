@@ -264,6 +264,16 @@
     \node (#1finalstate)[smallerstate, right of=#1, xshift=-1cm, yshift=0] {#1};
 }
 
+\newcommand{\stafiState}[3]{
+    \FPset\x{0}
+    \FPadd{\x}{-10}{#2}
+    \FPset\y{0}
+    \FPadd{\y}{}{#3}
+    \node (#1) [state] at (#2mm, #3mm) {};
+    \node (#1finalstate)[smallerstate, right of=#1, xshift=-1cm, yshift=0] {#1};
+    \draw [arrow] (\x mm, \y mm) -- node[anchor=east,xshift=-0.3cm] {Start} (#1);
+}
+
 
 \newenvironment{transitiongraph}[1][dea]
 {
@@ -293,6 +303,9 @@
             {final}{
                 \finalState{##2}{##3}{##4}
             }%
+            {stafi}{
+                \stafiState{##2}{##3}{##4}
+            }
         }[\PackageWarning{FLaAL}{##1 is no valid option. Defaults to normal}{}\normalState{##2}{##3}{##4}]
     }
     
