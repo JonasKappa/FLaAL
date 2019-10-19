@@ -94,15 +94,15 @@
     \begin{transitiongraph}[dka]
         \state[start]{q0}{0}{0}
         \state{q1}{61.935}{0}
-        \state{q2}{3.871}{180}
+        \state{q2}{3.871}{77.419}
         \state[final]{q3}{120}{0}
         \transition{q0}{q1}{$\mid$,a,$\mid$;$\mid$,b,$\relbar$}
         \transition{q0}{q2}{$\mid$,c,;$\mid$,d,}
-        \transition{q1}{q1}{$\mid$,a,$\mid$$\mid$;$\relbar$,a,$\mid$$\relbar$;$\mid$,b,$\relbar$$\mid$;$\relbar$,b,$\relbar$$\relbar$}
+        \transition[line=bot]{q1}{q1}{$\mid$,a,$\mid$$\mid$;$\relbar$,a,$\mid$$\relbar$;$\mid$,b,$\relbar$$\mid$;$\relbar$,b,$\relbar$$\relbar$}
         \transition{q1}{q3}{$\mid$,c,;$\relbar$,d,}
         \transition{q2}{q2}{$\mid$,a,;$\mid$,b,;$\mid$,c,;$\mid$,d,}
         \transition{q3}{q3}{$\mid$,c,;$\relbar$,d,}
-        \transition{q3}{q2}{$\mid$,a,;$\relbar$,a,;$\mid$,b,;$\relbar$,b,}
+        \transition[]{q3}{q2}{$\mid$,a,;$\relbar$,a,;$\mid$,b,;$\relbar$,b,}
     \end{transitiongraph}
     \caption{DKAGraph}
     \label{graph:DKAGraph}
@@ -114,12 +114,49 @@
         \state[start]{q1}{0}{0}
         \state[final]{q3}{120}{0}
         \state{q2}{58.605}{0}
-        \transition{q1}{q2}{$\mid$,,Song$\mid$}
+        \transition{q1}{q2}{\$,,Note}
         \transition{q2}{q3}{$\mid$,,}
         \transition{q2}{q2}{16,16,;32,32,;0,0,;E,E,;F,F,;G,G,;H,H,;A,A,;C,C,;1,1,;2,2,;3,3,;4,4,;8,8,;-,-,;D,D,;P,P,;Song,,Notes;Notes,,Note;Notes,,NoteNotes;Note,,Key-Duration;Note,,Pause-Duration;Key,,KeyNameOctave;KeyName,,C;KeyName,,D;KeyName,,E;KeyName,,F;KeyName,,G;KeyName,,H;KeyName,,A;Octave,,0;Octave,,1;Octave,,2;Octave,,3;Duration,,1;Duration,,2;Duration,,4;Duration,,8;Duration,,16;Duration,,32;Pause,,P}
     \end{transitiongraph}
     \caption{Notensprache}
     \label{graph:Notensprache}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{transitiongraph}[tm]
+        \state[start]{q0}{0}{0}
+        \state{q3}{120}{0}
+        \state[final]{q6}{0035.}{-25.946}
+        \state{q5}{0}{-48.649}
+        \state{q1}{35.676}{0}
+        \state{q4}{120}{-47.027}
+        \state{q2}{77.838}{0}
+        \transition{q0}{q1}{1,$\mid$,R}
+        \transition{q0}{q6}{$\mid$,$\mid$,R}
+        \transition{q3}{q4}{$\mid$,1,L}
+        \transition[line=left]{q5}{q5}{1,1,L}
+        \transition{q5}{q0}{$\mid$,$\mid$,R}
+        \transition{q1}{q1}{1,1,R}
+        \transition{q1}{q2}{$\mid$,$\mid$,R}
+        \transition{q4}{q5}{$\mid$,$\mid$,L}
+        \transition[line=bot]{q4}{q4}{1,1,L}
+        \transition{q2}{q2}{1,1,R}
+        \transition{q2}{q3}{$\mid$,1,R}
+    \end{transitiongraph}
+    \caption{TMGraph}
+    \label{graph:TMGraph}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{transitiongraph}[tm]
+        \state[start]{q0}{0}{0}
+        \state{q1}{120}{0}
+        \transition{q0}{q1}{0,0,R;1,0,R}
+    \end{transitiongraph}
+    \caption{Touringmachine}
+    \label{graph:Touringmachine}
 \end{figure}
 
 \end{document}
