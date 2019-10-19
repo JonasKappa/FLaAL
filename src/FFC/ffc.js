@@ -181,7 +181,7 @@ function checkForTokenWithDifferentMeaningInLaTeX(swapDollar, label) {
         for (const l of label) {
             if (l == '$') {
                 if (swapDollar) {
-                    res = res.concat('$\\mid$');
+                    res = res.concat('\\&');
                 } else {
                     res = res.concat('\\$');
                 }
@@ -197,7 +197,7 @@ function checkForTokenWithDifferentMeaningInLaTeX(swapDollar, label) {
     } else {
         if (label == '$') {
             if (swapDollar) {
-                return '$\\mid$';
+                return '\\&';
             } else {
                 return '\\$';
             }
