@@ -23,7 +23,7 @@
         \state[final]{q2}{40}{0}
         
         \transition{q0}{q1}{a;b}
-        \transition[line=left]{q0}{q2}{a;b;c}
+        \transition[line=left]{q0}{q2}{a{;}b;c}
         \transition[line=left]{q2}{q0}{a;b;c}
         \transition{q1}{q1}{a;b;c}
         \transition{q2}{q2}{a;b}
@@ -157,6 +157,32 @@
     \end{transitiongraph}
     \caption{Touringmachine}
     \label{graph:Touringmachine}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{transitiongraph}[tm]
+        \state[start]{q0}{0}{-19.286}
+        \state{q3}{120}{0}
+        \state[final]{q6}{30}{-38.571}
+        \state{q5}{0}{-60}
+        \state{q1}{34.286}{0}
+        \state{q4}{120}{-60}
+        \state{q2}{81.429}{0}
+        \transition{q0}{q1}{1,\&,R}
+        \transition{q0}{q6}{\&,\&,R}
+        \transition{q3}{q4}{\&,1,L}
+        \transition{q5}{q5}{1,1,L}
+        \transition{q5}{q0}{\&,\&,R}
+        \transition{q1}{q1}{1,1,R}
+        \transition{q1}{q2}{\&,\&,R}
+        \transition{q4}{q5}{\&,\&,L}
+        \transition{q4}{q4}{1,1,L}
+        \transition{q2}{q2}{1,1,R}
+        \transition{q2}{q3}{\&,1,R}
+    \end{transitiongraph}
+    \caption{Verdopplungsmaschine}
+    \label{graph:Verdopplungsmaschine}
 \end{figure}
 
 \end{document}

@@ -189,7 +189,7 @@
 \ExplSyntaxOff
 
 % Label Processing for
-% DKA
+% TM
 \ExplSyntaxOn
     
 \NewDocumentCommand{\tm@label@processing}{O{;}m}
@@ -228,6 +228,7 @@
         % pop third element
         \seq_pop_left:NN \l_tm_ele_args_seq \l_tm_ele_third_tl
         % adding labels to the proccessed labels
+        % Result is first:second,third
         \seq_put_right:Nx \l_tm_proc_args {\l_tm_ele_first_tl :\l_tm_ele_second_tl,\l_tm_ele_third_tl}
     }
     % print it below each other
