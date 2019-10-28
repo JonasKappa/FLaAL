@@ -261,7 +261,7 @@
 }
 
 \newcommand{\finalState}[3]{
-    \node (#1) [state] at (#2mm, #3mm) {};
+    \node (#1) [state] at (#2mm, #3mm) {#1};
     \node (#1finalstate)[smallerstate, right of=#1, xshift=-1cm, yshift=0] {#1};
 }
 
@@ -270,7 +270,7 @@
     \FPadd{\x}{-10}{#2}
     \FPset\y{0}
     \FPadd{\y}{}{#3}
-    \node (#1) [state] at (#2mm, #3mm) {};
+    \node (#1) [state] at (#2mm, #3mm) {#1};
     \node (#1finalstate)[smallerstate, right of=#1, xshift=-1cm, yshift=0] {#1};
     \draw [arrow] (\x mm, \y mm) -- node[anchor=east,xshift=-0.3cm] {Start} (#1);
 }
@@ -285,8 +285,8 @@
         {nka}{}%
         {tm}{}%
     }[\PackageError{FLaAL}{#1 is no valid option for tg environment. Use one of dea, nea, dka, nka or tm};]
-    \tikzstyle{state} = [circle, minimum width=1cm, text centered, draw=black, fill=white]
-    \tikzstyle{smallerstate} = [circle, minimum width=0.8cm, text centered, draw=black, fill=white]
+    \tikzstyle{state} = [circle, minimum width=1cm, text centered, draw=black, fill=white,inner sep=4]
+    \tikzstyle{smallerstate} = [circle, minimum width=0.8cm, text centered, draw=black, fill=white,inner sep=2]
     \tikzstyle{arrow} = [thick,->,>=stealth]
     % \newcommand{\test}{
     %     \filldraw[color=red!60, fill=red!5, very thick](-1,0) circle (1.5);
