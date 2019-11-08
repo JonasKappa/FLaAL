@@ -32,7 +32,7 @@ function clone(x) {
     return res;
 }
 
-function scale(flipY, st, width, height) {
+function scale(st, width, height) {
     let states = [];
     // clone the objects
     for (const state of st) {
@@ -112,12 +112,8 @@ function scale(flipY, st, width, height) {
                 s.y = Math.round(((height * p) / 100) * 1000) / 1000;
             }
         }
-        if (flipY) return flipYValues(states);
-        return states;
-    } else {
-        if (flipY) return flipYValues(states);
-        return states;
     }
+    return states;
 }
 
 function flipYValues(st) {
@@ -216,7 +212,10 @@ function compile(graph, options) {
         ...DEFAULT_OPTIONS,
         ...options
     }
-    let states = scale(o.flipY, graph.automaton.States, o.width, o.height);
+    let states = scale(graph.automaton.States, o.width, o.height);
+    if (o.flipY) {
+        states = flipYValues(states);
+    }
     let stateIDCollection = {};
     for (let i = 0; i < states.length; i++) {
         stateIDCollection[states[i].ID] = states[i];
