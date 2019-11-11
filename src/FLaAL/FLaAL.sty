@@ -293,18 +293,18 @@
     %     \fill[blue!50] (2.5,0) ellipse (1.5 and 0.5);
     %     \draw[ultra thick, ->] (6.5,0) arc (0:220:1);
     % }
-    \newcommand{\state}[4][normal]{
+    \newcommand{\state}[4][n]{
         \IfStrEqCase{##1}{
-            {start}{
+            {s}{
                 \startState{##2}{##3}{##4}
             }%
-            {normal}{
+            {n}{
                 \normalState{##2}{##3}{##4}
             }%
-            {final}{
+            {f}{
                 \finalState{##2}{##3}{##4}
             }%
-            {stafi}{
+            {sf}{
                 \stafiState{##2}{##3}{##4}
             }
         }[\PackageWarning{FLaAL}{##1 is no valid option. Defaults to normal}{}\normalState{##2}{##3}{##4}]

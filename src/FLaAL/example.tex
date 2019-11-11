@@ -1,4 +1,4 @@
-\documentclass[12pt,a4paper]{article}
+\documentclass[a4paper]{article}
 \usepackage[utf8]{inputenc}
 
 \usepackage{FLaAL}
@@ -15,12 +15,37 @@
 
 \maketitle
 \newpage
+
+\begin{figure}
+    \centering
+    \begin{transitiongraph}[tm]
+        \state[s]{Z1}{0}{-33.103}
+        \state{Z2}{41.379}{-33.103}
+        \state{Z3}{41.379}{0}
+        \state{Z4}{82.759}{0}
+        \state{Z5}{82.759}{-33.103}
+        \state[f]{Z6}{120}{-33.103}
+        \transition{Z1}{Z2}{a,d,R}
+        \transition{Z2}{Z3}{b,d,R}
+        \transition[line=bot]{Z2}{Z2}{a,a,R;d,d,R}
+        \transition{Z3}{Z4}{c,d,L}
+        \transition{Z3}{Z3}{b,b,R;d,d,R}
+        \transition{Z4}{Z5}{\&,\&,R}
+        \transition{Z4}{Z4}{a,a,L;b,b,L;c,c,L;d,d,L}
+        \transition{Z5}{Z6}{\&,\&,L}
+        \transition{Z5}{Z2}{a,d,R}
+        \transition[line=bot]{Z5}{Z5}{d,d,R}
+    \end{transitiongraph}
+    \caption{$a^n$ $b^n$ $c^n$}
+    \label{graph:a^n_b^n_c^n}
+\end{figure}
+
 \begin{figure}
     \centering
     \begin{transitiongraph}[dea]
-        \state[stafi]{q0}{0}{0}
-        \state{q1}{20}{40}
-        \state[final]{q2}{40}{0}
+        \state[sf]{q0}{0}{0}
+        \state{q1}{40}{0}
+        \state[f]{q2}{0}{40}
         
         \transition{q0}{q1}{a;b}
         \transition[line=left]{q0}{q2}{a;b;c}
@@ -35,9 +60,9 @@
 \begin{figure}
     \centering
     \begin{transitiongraph}[nea]
-        \state[start]{q0}{0}{0}
+        \state[s]{q0}{0}{0}
         \state{q1}{20}{40}
-        \state[final]{q2}{40}{0}
+        \state[f]{q2}{40}{0}
         
         \transition{q0}{q1}{a;b}
         \transition[line=left]{q0}{q2}{;a;b;c}
@@ -52,9 +77,9 @@
 \begin{figure}
     \centering
     \begin{transitiongraph}[dka]
-        \state[start]{q0}{0}{0}
+        \state[s]{q0}{0}{0}
         \state{q2}{25}{45}
-        \state[final]{q1}{50}{0}
+        \state[f]{q1}{50}{0}
         
         \transition{q0}{q1}{\|,a,\e;\|,c,\e}
         \transition{q0}{q2}{\|,b,\|\|\|}
@@ -68,8 +93,8 @@
 \begin{figure}
     \centering
     \begin{transitiongraph}[nka]
-        \state[start]{q0}{0}{0}
-        \state[final]{q1}{50}{0}
+        \state[s]{q0}{0}{0}
+        \state[f]{q1}{50}{0}
         
         \transition{q0}{q1}{,a,\e;,b,\e;,,}
     \end{transitiongraph}
@@ -80,8 +105,8 @@
 \begin{figure}
     \centering
     \begin{transitiongraph}[tm]
-        \state[start]{q0}{0}{0}
-        \state[final]{q1}{50}{0}
+        \state[s]{q0}{0}{0}
+        \state[f]{q1}{50}{0}
         
         \transition{q0}{q1}{\$,0,R;0,1,L;1,0,N}
     \end{transitiongraph}
@@ -92,10 +117,10 @@
 \begin{figure}
     \centering
     \begin{transitiongraph}[dka]
-        \state[start]{q0}{0}{0}
+        \state[s]{q0}{0}{0}
         \state{q1}{61.935}{0}
         \state{q2}{3.871}{77.419}
-        \state[final]{q3}{120}{0}
+        \state[f]{q3}{120}{0}
         \transition{q0}{q1}{\&,a,\&;\&,b,$\relbar$}
         \transition{q0}{q2}{$\mid$,c,;$\mid$,d,}
         \transition[line=bot]{q1}{q1}{$\mid$,a,$\mid$$\mid$;$\relbar$,a,$\mid$$\relbar$;$\mid$,b,$\relbar$$\mid$;$\relbar$,b,$\relbar$$\relbar$}
@@ -111,8 +136,8 @@
 \begin{figure}
     \centering
     \begin{transitiongraph}[nka]
-        \state[start]{q1}{0}{0}
-        \state[final]{q3}{120}{0}
+        \state[sf]{q1}{0}{0}
+        \state[f]{q3}{120}{0}
         \state{q2}{58.605}{0}
         \transition{q1}{q2}{\$,,Note}
         \transition{q2}{q3}{$\mid$,,}
@@ -125,9 +150,9 @@
 \begin{figure}
     \centering
     \begin{transitiongraph}[tm]
-        \state[start]{q0}{0}{0}
+        \state[s]{q0}{0}{0}
         \state{q3}{120}{0}
-        \state[final]{q6}{0035.}{-25.946}
+        \state[f]{q6}{0035.}{-25.946}
         \state{q5}{0}{-48.649}
         \state{q1}{35.676}{0}
         \state{q4}{120}{-47.027}
@@ -151,7 +176,7 @@
 \begin{figure}
     \centering
     \begin{transitiongraph}[tm]
-        \state[start]{q0}{0}{0}
+        \state[s]{q0}{0}{0}
         \state{q1}{120}{0}
         \transition{q0}{q1}{0,0,R;1,0,R}
     \end{transitiongraph}
@@ -162,9 +187,9 @@
 \begin{figure}
     \centering
     \begin{transitiongraph}[tm]
-        \state[start]{q0}{0}{-19.286}
+        \state[s]{q0}{0}{-19.286}
         \state{q3}{120}{0}
-        \state[final]{q6}{30}{-38.571}
+        \state[f]{q6}{30}{-38.571}
         \state{q5}{0}{-60}
         \state{q1}{34.286}{0}
         \state{q4}{120}{-60}
