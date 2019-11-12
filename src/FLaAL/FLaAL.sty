@@ -19,6 +19,21 @@
 \newcommand{\test@empty}{xxx}
 \newcommand{\e}{$\varepsilon$}
 
+% Helperfunction
+% Check if element is in list
+% \ExplSyntaxOn
+
+% \cs_new:Npn \check_ele_in_list:nN #1 #2
+% {
+%     \seq_pop_left:cN {#2} \help_temp 
+%     \help_temp
+% }
+
+% \tl_new:N \help_temp
+
+% \ExplSyntaxOff
+
+
 % Label Processing for
 % DEA
 \ExplSyntaxOn
@@ -32,10 +47,18 @@
 {
     \seq_set_split:Nnn \l_dea_args_seq { #1 } { #2 }
     \seq_pop_left:NN \l_dea_args_seq \l_dea_temp_tl
+    %\seq_put_right:NV \l_used_labels \l_dea_temp_tl
     \l_dea_temp_tl
-    \seq_map_inline:Nn \l_dea_args_seq {,\space##1}
+    \seq_map_inline:Nn \l_dea_args_seq {
+        %\ifthenelse{\equal{b}{\check_ele_in_list:nN {##1} {\l_used_labels}}}{
+            ,\space##1
+        %}{}
+        %\seq_put_right:Nx \l_used_labels {##1}
+    }
 }
 
+% \seq_new:N \l_dea_used_labels
+% \tl_new:N \help_temp
 \seq_new:N \l_dea_args_seq
 \tl_new:N \l_dea_temp_tl
 
@@ -55,14 +78,29 @@
     \seq_set_split:Nnn \l_nea_args_seq { #1 } { #2 }
     \seq_pop_left:NN \l_nea_args_seq \l_nea_temp_tl
     \StrLen{\l_nea_temp_tl}[\nealength]
+    \seq_clear:N \l_ea_used_labels
     \ifthenelse{\equal{\nealength}{0}}{
         $\varepsilon$
     }{
+        \seq_put_right:NV \l_ea_used_labels \l_nea_temp_tl
         \l_nea_temp_tl
     }
-    \seq_map_inline:Nn \l_nea_args_seq {,\space ##1}
+    \seq_map_inline:Nn \l_nea_args_seq {
+        \tl_set:Nn \tl_ea_ele_in_list {false}
+        \seq_map_inline:Nn \l_ea_used_labels {
+            \ifthenelse{\equal{##1}{####1}}{
+                \tl_set:Nn \tl_ea_ele_in_list {true}
+            }{}
+        }
+        \ifthenelse{\equal{false}{\tl_ea_ele_in_list}}{
+            ,\space ##1
+            \seq_put_right:Nx \l_ea_used_labels {##1}
+        }{}
+    }
 }
 
+\tl_new:N \tl_ea_ele_in_list
+\seq_new:N \l_ea_used_labels
 \seq_new:N \l_nea_args_seq
 \tl_new:N \l_nea_temp_tl
 
