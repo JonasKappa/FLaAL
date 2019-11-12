@@ -18,6 +18,19 @@
 
 \begin{figure}
     \centering
+    \begin{transitiongraph}[dka]
+        \state[sf]{q0}{0}{0}
+        \state{q1}{120}{0}
+        \transition[line=left]{q0}{q1}{\$,a,A\$;\$,b,B\$}
+        \transition{q1}{q1}{A,a,AA;A,b,;B,a,;B,b,BB}
+        \transition[line=left]{q1}{q0}{\$,,\$}
+    \end{transitiongraph}
+    \caption{Gleich viele a's wie b's als DKA}
+    \label{graph:Gleich_viele_a's_wie_b's_als_DKA}
+\end{figure}
+
+\begin{figure}
+    \centering
     \begin{transitiongraph}[tm]
         \state[s]{Z1}{0}{-33.103}
         \state{Z2}{41.379}{-33.103}
@@ -66,7 +79,7 @@
         
         \transition{q0}{q1}{a;b}
         \transition[line=left]{q0}{q2}{;a;b;c}
-        \transition[line=left]{q2}{q0}{a;b;c}
+        \transition[line=left]{q2}{q0}{a;a;b;c}
         \transition{q1}{q1}{a;b;c}
         \transition{q2}{q2}{a;b}
         \transition[label=right]{q2}{q1}{a;b;c;d}
