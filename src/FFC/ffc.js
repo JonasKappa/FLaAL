@@ -207,6 +207,17 @@ function checkForTokenWithDifferentMeaningInLaTeX(swapDollar, label) {
     }
 }
 
+function getAutomatonType(type) {
+    switch (type) {
+        case 'DEA':
+        case 'NEA': return '[fa]';
+        case 'DKA':
+        case 'NKA': return '[pa]';
+        case 'TM': return '[tm]';
+        default: return '[fa]';
+    }
+}
+
 function compile(graph, options) {
     let o = {
         ...DEFAULT_OPTIONS,
@@ -221,7 +232,7 @@ function compile(graph, options) {
         stateIDCollection[states[i].ID] = states[i];
     }
 
-    let code = `\\begin{figure}\n${tab(1)}\\centering\n${tab(1)}\\begin{transitiongraph}[${graph.type.toLocaleLowerCase()}]`;
+    let code = `\\begin{figure}\n${tab(1)}\\centering\n${tab(1)}\\begin{transitiongraph}${getAutomatonType(graph.type)}`;
     for (const s of states) {
         code = code.concat(`\n${tab(2)}`);
         code = code.concat(`\\state${getTypeOfState(s)}{${s.Name}}{${s.x}}{${s.y}}`);
