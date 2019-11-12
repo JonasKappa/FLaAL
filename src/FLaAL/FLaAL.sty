@@ -131,11 +131,14 @@
 
 \cs_new_protected:Npn \pa_make:nn #1 #2
 {
+    % clearing the used labels for new use
+    \seq_clear:N \l_pa_used_labels
     % split by semicolon
     \seq_set_split:Nnn \l_pa_args_seq { #1 } { #2 }
     % pop first element
     \seq_pop_left:NN \l_pa_args_seq \l_pa_temp_tl
-    
+    % put the label in the used labels
+    \seq_put_right:NV \l_pa_used_labels \l_pa_temp_tl
     % split first element by comma
     \seq_set_split:NnV \l_pa_ele_args_seq {,} {\l_pa_temp_tl}
     % pop first element
@@ -153,23 +156,39 @@
     \seq_clear:N \l_pa_proc_args
     % going trough all remaining labels
     \seq_map_inline:Nn \l_pa_args_seq {
-        % split first element by comma
-        \seq_set_split:Nnn \l_pa_ele_args_seq {,} {##1}
-        % pop first element
-        \seq_pop_left:NN \l_pa_ele_args_seq \l_pa_ele_first_tl
-        % pop second element
-        \seq_pop_left:NN \l_pa_ele_args_seq \l_pa_ele_second_tl
-        \StrLen{\l_pa_ele_second_tl}[\paseclength]
-        % pop third element
-        \seq_pop_left:NN \l_pa_ele_args_seq \l_pa_ele_third_tl
-        \StrLen{\l_pa_ele_third_tl}[\pathirdlength]
-        % adding labels to the proccessed labels
-        \seq_put_right:Nx \l_pa_proc_args {(\l_pa_ele_first_tl,\int_compare:nTF {\paseclength=0}{$\varepsilon$}{\l_pa_ele_second_tl} ):\int_compare:nTF {\pathirdlength=0}{$\varepsilon$}{\l_pa_ele_third_tl}}
+        % set the pa element in list flag to false
+        \tl_set:Nn \tl_pa_ele_in_list {false}
+        % search for matching, already used label
+        \seq_map_inline:Nn \l_pa_used_labels {
+            \ifthenelse{\equal{##1}{####1}}{
+                \tl_set:Nn \tl_pa_ele_in_list {true}
+            }{}
+        }
+        \ifthenelse{\equal{false}{\tl_pa_ele_in_list}}{
+            % isn't in use already so add to the used label list
+            \seq_put_right:Nx \l_pa_used_labels {##1}
+            % continue with standard procedure
+            % split first element by comma
+            \seq_set_split:Nnn \l_pa_ele_args_seq {,} {##1}
+            % pop first element
+            \seq_pop_left:NN \l_pa_ele_args_seq \l_pa_ele_first_tl
+            % pop second element
+            \seq_pop_left:NN \l_pa_ele_args_seq \l_pa_ele_second_tl
+            \StrLen{\l_pa_ele_second_tl}[\paseclength]
+            % pop third element
+            \seq_pop_left:NN \l_pa_ele_args_seq \l_pa_ele_third_tl
+            \StrLen{\l_pa_ele_third_tl}[\pathirdlength]
+            % adding labels to the proccessed labels
+            \seq_put_right:Nx \l_pa_proc_args {(\l_pa_ele_first_tl,\int_compare:nTF {\paseclength=0}{$\varepsilon$}{\l_pa_ele_second_tl} ):\int_compare:nTF {\pathirdlength=0}{$\varepsilon$}{\l_pa_ele_third_tl}}
+        }{}
     }
     % print it below each other
     \seq_map_inline:Nn \l_pa_proc_args {\\##1}
     
 }
+
+\tl_new:N \tl_pa_ele_in_list
+\seq_new:N \l_pa_used_labels
 
 \seq_new:N \l_pa_ele_args_seq
 \seq_new:N \l_pa_args_seq
