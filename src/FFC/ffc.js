@@ -130,13 +130,13 @@ function flipYValues(st) {
 
 function getTypeOfState(state) {
     if (state.Final && state.Start) {
-        return '[stafi]';
+        return '[sf]';
     }
     if (state.Final) {
-        return '[final]';
+        return '[f]';
     }
     if (state.Start) {
-        return '[start]';
+        return '[s]';
     }
     return '';
 }
