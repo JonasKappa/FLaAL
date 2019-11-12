@@ -1134,7 +1134,7 @@ function getFlag(flag) {
 
 function runWithAutomatonFile(automatonFile, options) {
     try {
-        let automaton = JSON.parse(fs.readFileSync(`./${automatonFile}`, `utf8`));
+        let automaton = JSON.parse(fs.readFileSync(`./${automatonFile}`, `utf8`).replace(/^\uFEFF/, ''));
         save(ffc(automaton, options));
     } catch (err) {
         console.error(err);
