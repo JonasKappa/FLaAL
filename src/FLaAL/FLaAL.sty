@@ -10,6 +10,8 @@
 \RequirePackage{xkeyval}
 \RequirePackage{xparse}
 \RequirePackage{ifthen}
+\RequirePackage{multido}
+\RequirePackage{arrayjobx}
 
 %%This parts handles the options passed to the package.
 \ProcessOptions\relax
@@ -278,7 +280,6 @@
 
 \ExplSyntaxOff
 
-
 \newcommand{\startState}[3]{
     \FPset\x{0}
     \FPadd{\x}{-10}{#2}
@@ -307,6 +308,203 @@
     \draw [arrow] (\x mm, \y mm) -- node[anchor=east,xshift=-0.3cm] {Start} (#1);
 }
 
+\newcommand{\t@line}{straight}
+\newcommand{\t@label}{south}
+
+\define@key{trans}{line}{
+    \IfStrEqCase{#1}{
+        {straight}{
+            \renewcommand{\t@line}{straight}
+        }%
+        {left}{
+            \renewcommand{\t@line}{bend left}
+        }%
+        {right}{
+            \renewcommand{\t@line}{bend right}
+        }%
+        {top}{
+            \renewcommand{\t@line}{loop above}
+        }%
+        {bot}{
+            \renewcommand{\t@line}{loop below}
+        }%
+        {start}{
+            \renewcommand{\t@line}{start}
+        }%
+    }[\PackageWarning{FLaAL}{#1 is no valid option for line. Please use left, right, straight, top or bot}{}\renewcommand{\t@line}{start}]
+}
+\define@key{trans}{label}{
+    \IfStrEqCase{#1}{
+        {top}{
+            \renewcommand{\t@label}{south}
+        }%
+        {bot}{
+            \renewcommand{\t@label}{north}
+        }%
+        {left}{
+            \renewcommand{\t@label}{east}
+        }%
+        {right}{
+            \renewcommand{\t@label}{west}
+        }%
+        {midway}{
+            \renewcommand{\t@label}{midway}  
+        }%
+    }[\PackageWarning{FLaAL}{#1 is no valid option for label. Please choose one of top, bot, left or right}{}\renewcommand{\t@label}{south}]
+}
+
+% Manages all the state occurances
+\ExplSyntaxOn
+    
+\NewDocumentCommand{\State@Manager}{mmmmmm}
+{
+    \state_manager:nnnnnn {#1} {#2} {#3} {#4} {#5} {#6}
+}
+% 1 - source of calling
+% 2 - state name (start of transition)
+% 3 - state type (or style of transition)
+% 4 - x (or labels of transition)
+% 5 - y (or destination state of transition)
+% 6 - automaton type
+\cs_new_protected:Npn \state_manager:nnnnnn #1 #2 #3 #4 #5 #6
+{
+    \ifthenelse{\equal{c}{#1}}{
+        % clear the states sequence
+        \seq_clear:N \l_states
+    }{
+        % check if given state is in states sequence
+        \tl_set:Nn \tl_state_in_states {false}
+        \seq_map_inline:Nn \l_states {
+            % if given state #2 equals state in list ##1
+            \ifthenelse{\equal{#2}{##1}}{
+                \tl_set:Nn \tl_state_in_states {true}
+            }{}
+        }
+        \ifthenelse{\equal{s}{#1}}{
+            % this function got called by state command
+            \ifthenelse{\equal{false}{\tl_state_in_states}}{
+                % state is not in states
+                \seq_put_right:Nx \l_states {#2}
+                \IfStrEqCase{#3}{
+                    {s}{
+                        \startState{#2}{#4}{#5}
+                    }%
+                    {n}{
+                        \normalState{#2}{#4}{#5}
+                    }%
+                    {f}{
+                        \finalState{#2}{#4}{#5}
+                    }%
+                    {sf}{
+                        \stafiState{#2}{#4}{#5}
+                    }
+                }[\PackageWarning{FLaAL}{#3\space is\space no\space valid\space option.\space Defaults\space to\space normal}{}\normalState{#2}{#4}{#5}]
+            }{
+                % state is in states
+                \errmessage{#2\space is\space already\space defined.\space Choose\space another\space unique\space name\space for\space this\space state}
+            }
+        }{
+            \ifthenelse{\equal{t}{#1}}{
+                % this function got called by transition command
+                \tl_set:Nn \tl_state_dest_in_states {false}
+                \seq_map_inline:Nn \l_states {
+                    % if given dest state #5 equals state in list ##1
+                    \ifthenelse{\equal{#5}{##1}}{
+                        \tl_set:Nn \tl_state_dest_in_states {true}
+                    }{}
+                }
+                \ifthenelse{\equal{true}{\tl_state_dest_in_states}}{
+                    % both states are in l_States
+                    \IfSubStr{#3}{line}{
+                        \IfSubStr{#3}{label}{
+                            % line und label sind drin
+                            \setkeys{trans}{#3}
+                        }{
+                            % line aber kein label
+                            \setkeys{trans}{#3,label=midway}
+                        }
+                    }{
+                        \IfSubStr{#3}{label}{
+                            % label aber kein line
+                            \setkeys{trans}{line=start,#3}
+                        }{
+                            % kein line und kein label
+                            \setkeys{trans}{line=start,label=midway}
+                        }
+                    }
+                    % If start and destination are equal
+                    \ifthenelse{\equal{#2}{#5}}
+                    {
+                        % selftransition
+                        \IfStrEqCase{\t@line}{
+                            {bend left}{
+                                \renewcommand{\t@line}{loop\space left}
+                            }%
+                            {bend right}{
+                                \renewcommand{\t@line}{loop\space right}
+                            }%
+                            {straight}{
+                                \PackageWarning{FLaAL}{straight\space is\space not\space a\space valid\space option\space for\space a\space self\space transition}{}
+                                \renewcommand{\t@line}{loop\space above}
+                            }%
+                            {start}{
+                                \renewcommand{\t@line}{loop\space above}
+                            }%
+                        }
+                    }
+                    {
+                        % normal transitions
+                        \IfStrEqCase{\t@line}{
+                            {loop above}{
+                                \PackageWarning{FLaAL}{top\space is\space not\space a\space valid\space option\space for\space a\space normal\space transition}{}
+                                \renewcommand{\t@line}{}
+                            }%
+                            {loop below}{
+                                \PackageWarning{FLaAL}{bot\space is\space not\space a\space valid\space option\space for\space a\space normal\space transition}{}
+                                \renewcommand{\t@line}{}
+                            }%
+                            {straight}{
+                                \renewcommand{\t@line}{}
+                            }%
+                            {start}{
+                                \renewcommand{\t@line}{}
+                            }%
+                        }
+                    }
+                    \ifthenelse{\equal{\t@label}{midway}}{
+                        \path (#2) edge [\t@line] node [\t@label,align=center] %
+                        {%
+                            \IfStrEqCase{#6}{
+                                {fa}{\fa@label@processing{#4}}
+                                {pa}{\pa@label@processing{#4}}
+                                {tm}{\tm@label@processing{#4}}
+                            } %
+                        } (#5);
+                    }{
+                        \path (#2) edge [\t@line] node [anchor=\t@label,align=center] %
+                        {%
+                            \IfStrEqCase{#6}{
+                                {fa}{\fa@label@processing{#4}}
+                                {pa}{\pa@label@processing{#4}}
+                                {tm}{\tm@label@processing{#4}}
+                            } %
+                        } (#5);
+                    }
+                }{
+                    % dest is not in l_States
+                    \PackageWarning{FLaAL}{Destination\space state\space #5\space is\space not\space in\space States.\space Please\space make\space sure\space that\space the\space state\space was\space defined.\space Ignoring\space this\space transition}
+                }
+            }{
+                % start is not in States
+                \PackageWarning{FLaAL}{Start\space state\space #2\space is\space not\space in\space States.\space Please\space make\space sure\space that\space the\space state\space was\space defined.\space Ignoring\space this\space transition}
+            }
+        }
+    }
+}
+\tl_new:N \tl_state_in_states
+\tl_new:N \tl_state_dest_in_states
+\seq_new:N \l_states
+\ExplSyntaxOff
 
 \newenvironment{transitiongraph}[1][fa]
 {
@@ -318,155 +516,17 @@
     \tikzstyle{state} = [circle, minimum width=1cm, text centered, draw=black, fill=white,inner sep=4]
     \tikzstyle{smallerstate} = [circle, minimum width=0.8cm, text centered, draw=black, fill=white,inner sep=2]
     \tikzstyle{arrow} = [thick,->,>=stealth]
-    % \newcommand{\test}{
-    %     \filldraw[color=red!60, fill=red!5, very thick](-1,0) circle (1.5);
-    %     \fill[blue!50] (2.5,0) ellipse (1.5 and 0.5);
-    %     \draw[ultra thick, ->] (6.5,0) arc (0:220:1);
-    % }
+    \State@Manager{c}{c}{c}{c}{c}{#1}
     \newcommand{\state}[4][n]{
-        \IfStrEqCase{##1}{
-            {s}{
-                \startState{##2}{##3}{##4}
-            }%
-            {n}{
-                \normalState{##2}{##3}{##4}
-            }%
-            {f}{
-                \finalState{##2}{##3}{##4}
-            }%
-            {sf}{
-                \stafiState{##2}{##3}{##4}
-            }
-        }[\PackageWarning{FLaAL}{##1 is no valid option. Defaults to normal}{}\normalState{##2}{##3}{##4}]
+        \State@Manager{s}{##2}{##1}{##3}{##4}{#1}
     }
-    
-    \newcommand{\t@line}{straight}
-    \newcommand{\t@label}{south}
-    
-    \define@key{trans}{line}{
-        \IfStrEqCase{##1}{
-            {straight}{
-                \renewcommand{\t@line}{straight}
-            }%
-            {left}{
-                \renewcommand{\t@line}{bend left}
-            }%
-            {right}{
-                \renewcommand{\t@line}{bend right}
-            }%
-            {top}{
-                \renewcommand{\t@line}{loop above}
-            }%
-            {bot}{
-                \renewcommand{\t@line}{loop below}
-            }%
-            {start}{
-                \renewcommand{\t@line}{start}
-            }%
-        }[\PackageWarning{FLaAL}{##1 is no valid option for line. Please use left, right, straight, top or bot}{}\renewcommand{\t@line}{start}]
-    }
-    \define@key{trans}{label}{
-        \IfStrEqCase{##1}{
-            {top}{
-                \renewcommand{\t@label}{south}
-            }%
-            {bot}{
-                \renewcommand{\t@label}{north}
-            }%
-            {left}{
-                \renewcommand{\t@label}{east}
-            }%
-            {right}{
-                \renewcommand{\t@label}{west}
-            }%
-            {midway}{
-                \renewcommand{\t@label}{midway}  
-            }%
-        }[\PackageWarning{FLaAL}{##1 is no valid option for label. Please choose one of top, bot, left or right}{}\renewcommand{\t@label}{south}]
-    }
-    
     % 1 = {anchor for text; default= south (means above)}
     % 2 = start
     % 3 = destination
     % 4 = labels
     \newcommand{\transition}[4][line=start,label=midway]
     {
-        \IfSubStr{##1}{line}{
-            \IfSubStr{##1}{label}{
-                % line und label sind drin
-                \setkeys{trans}{##1}
-            }{
-                % line aber kein label
-                \setkeys{trans}{##1,label=midway}
-            }
-        }{
-            \IfSubStr{##1}{label}{
-                % label aber kein line
-                \setkeys{trans}{line=start,##1}
-            }{
-                % kein line und kein label
-                \setkeys{trans}{line=start,label=midway}
-            }
-        }
-        
-        % If start and destination are equal
-        \ifthenelse{\equal{##2}{##3}}
-        {
-            % selftransition
-            \IfStrEqCase{\t@line}{
-                {bend left}{
-                    \renewcommand{\t@line}{loop left}
-                }%
-                {bend right}{
-                    \renewcommand{\t@line}{loop right}
-                }%
-                {straight}{
-                    \PackageWarning{FLaAL}{straight is not a valid option for a self transition}{}
-                    \renewcommand{\t@line}{loop above}
-                }%
-                {start}{
-                    \renewcommand{\t@line}{loop above}
-                }%
-            }
-        }
-        {
-            % normal transitions
-            \IfStrEqCase{\t@line}{
-                {loop above}{
-                    \PackageWarning{FLaAL}{top is not a valid option for a normal transition}{}
-                    \renewcommand{\t@line}{}
-                }%
-                {loop below}{
-                    \PackageWarning{FLaAL}{bot is not a valid option for a normal transition}{}
-                    \renewcommand{\t@line}{}
-                }%
-                {straight}{
-                    \renewcommand{\t@line}{}
-                }%
-                {start}{
-                    \renewcommand{\t@line}{}
-                }%
-            }
-        }
-        \ifthenelse{\equal{\t@label}{midway}}{
-            \path (##2) edge [\t@line] node [\t@label,align=center] %
-            {%
-                \IfStrEqCase{#1}{
-                    {fa}{\fa@label@processing{##4}}
-                    {pa}{\pa@label@processing{##4}}
-                    {tm}{\tm@label@processing{##4}}
-                } %
-            } (##3);
-        }{
-            \path (##2) edge [\t@line] node [anchor=\t@label,align=center] %
-            {%
-                \IfStrEqCase{#1}{
-                    {fa}{\fa@label@processing{##4}}
-                    {pa}{\pa@label@processing{##4}}
-                    {tm}{\tm@label@processing{##4}}
-                } %
-            } (##3);
-        }
+        \State@Manager{t}{##2}{##1}{##4}{##3}{#1}
     }
     \begin{tikzpicture}[->,>=stealth,auto]
 }
