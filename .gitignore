@@ -1,2 +1,6 @@
 /src/FFC/graph.txt
 /src/FFC/*.json
+/src/FLaAL/*.aux
+/src/FLaAL/*.fdb_latexmk
+/src/FLaAL/*.log
+/src/FLaAL/*.fls
