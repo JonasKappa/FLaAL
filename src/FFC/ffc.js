@@ -316,7 +316,7 @@ function compile(graph, options) {
                     bend.push('');
                 }
             } else {
-                // If the transition is not straight
+                //If the transition is not straight
                 if (!((t.x + t.y) == 0)) {
                     let dir = getDirection(stateIDCollection[t.Source], stateIDCollection[t.Target]);
                     if (((t.x + t.y) > 0 && (dir == DIRECTIONS['right'] || dir == DIRECTIONS['top'])) ||
@@ -332,6 +332,17 @@ function compile(graph, options) {
             }
             bendTransitions.push(bend);
 
+        }
+    }
+    for (const s of states) {
+        for (const t of s.Transitions) {
+            for (const bend of bendTransitions) {
+                if (bend[0] != bend[1]) {
+                    if ((bend[1] == t.Source && bend[0] == t.Target)) {
+                        bend[2] = '[line=left]';
+                    }
+                }
+            }
         }
     }
     for (const s of states) {
