@@ -5,6 +5,12 @@ const DEFAULT_OPTIONS = {
     width: 120,
     height: 180
 }
+const DIRECTIONS = {
+    'right': 0,
+    'left': 1,
+    'top': 2,
+    'bot': 3
+}
 
 function tab(n) {
     let res = ``;
@@ -222,6 +228,40 @@ function getAutomatonType(type) {
     }
 }
 
+function getDirection(s0, s1) {
+    let x0 = s0.x;
+    let x1 = s1.x;
+    let y0 = s0.y;
+    let y1 = s1.y;
+    if (x0 >= x1 && y0 >= y1) {
+        if ((x0 - x1) >= (y0 - y1)) {
+            return DIRECTIONS['left'];
+        } else {
+            return DIRECTIONS['top'];
+        }
+    } else if ((x0 >= x1) && (y0 < y1)) {
+        if ((x0 - x1) >= (y1 - y0)) {
+            return DIRECTIONS['left'];
+        } else {
+            return DIRECTIONS['bot'];
+        }
+    } else if ((x0 < x1) && (y0 >= y1)) {
+        if ((x1 - x0) >= (y0 - y1)) {
+            return DIRECTIONS['right'];
+        } else {
+            return DIRECTIONS['top'];
+        }
+    } else if ((x0 < x1) && (y0 < y1)) {
+        if ((x1 - x0) >= (y1 - y0)) {
+            return DIRECTIONS['right'];
+        } else {
+            return DIRECTIONS['bot'];
+        }
+    } else {
+        return DIRECTIONS['right'];
+    }
+}
+
 function compile(graph, options) {
     let o = {
         ...DEFAULT_OPTIONS,
@@ -244,17 +284,53 @@ function compile(graph, options) {
     let bendTransitions = [];
     for (const s of states) {
         for (const t of s.Transitions) {
-            if (s.Name != stateIDCollection[t.Target].Name) {
-                let found = false;
-                for (const bend of bendTransitions) {
-                    if ((bend[0] == s.Name && bend[1] == stateIDCollection[t.Target].Name) || (bend[1] == s.Name && bend[0] == stateIDCollection[t.Target].Name)) {
-                        bend[2] = true;
+
+            // Start and destination are the same transition
+            let bend = [t.Source, t.Target];
+            if (t.Source == t.Target) {
+                if (t.x >= 0 && t.y >= 0) {
+                    if (t.x > t.y) {
+                        bend.push('[line=right]');
+                    } else {
+                        bend.push('[line=bot]');
                     }
+                } else if (t.x >= 0 && t.y < 0) {
+                    if (t.x > Math.abs(t.y)) {
+                        bend.push('[line=right]');
+                    } else {
+                        bend.push('');
+                    }
+                } else if (t.x < 0 && t.y >= 0) {
+                    if (Math.abs(t.x) > t.y) {
+                        bend.push('[line=left]');
+                    } else {
+                        bend.push('[line=bot]');
+                    }
+                } else if (t.x < 0 && t.y < 0) {
+                    if (Math.abs(t.x) > Math.abs(t.y)) {
+                        bend.push('[line=left]');
+                    } else {
+                        bend.push('');
+                    }
+                } else {
+                    bend.push('');
                 }
-                if (!found) {
-                    bendTransitions.push([s.Name, stateIDCollection[t.Target].Name, false]);
+            } else {
+                // If the transition is not straight
+                if (!((t.x + t.y) == 0)) {
+                    let dir = getDirection(stateIDCollection[t.Source], stateIDCollection[t.Target]);
+                    if (((t.x + t.y) > 0 && (dir == DIRECTIONS['right'] || dir == DIRECTIONS['top'])) ||
+                        ((t.x + t.y) < 0 && (dir == DIRECTIONS['left'] || dir == DIRECTIONS['bot']))) {
+                        bend.push('[line=left]');
+                    } else if (((t.x + t.y) > 0 && (dir == DIRECTIONS['left'] || dir == DIRECTIONS['bot'])) ||
+                        ((t.x + t.y) < 0 && (dir == DIRECTIONS['right'] || dir == DIRECTIONS['top']))) {
+                        bend.push('[line=right]');
+                    }
+                } else {
+                    bend.push('');
                 }
             }
+            bendTransitions.push(bend);
 
         }
     }
@@ -271,8 +347,10 @@ function compile(graph, options) {
             }
             let bending = ``;
             for (const bend of bendTransitions) {
-                if (bend[2] && ((bend[0] == s.Name && bend[1] == stateIDCollection[t.Target].Name) || (bend[1] == s.Name && bend[0] == stateIDCollection[t.Target].Name))) {
-                    bending = `[line=left]`;
+                let start = bend[0];
+                let dest = bend[1];
+                if (start == s.ID && dest == t.Target) {
+                    bending = bend[2];
                 }
             }
             code = code.concat(`\n${tab(2)}`);
