@@ -185,6 +185,8 @@ function checkForTokenWithDifferentMeaningInLaTeX(swapDollar, label) {
                 res = res.concat('$\\mid$');
             } else if (l == '-') {
                 res = res.concat('$\\relbar$');
+            } else if (l == '#') {
+                res = res.concat('\\#');
             } else {
                 res = res.concat(l);
             }
@@ -201,6 +203,8 @@ function checkForTokenWithDifferentMeaningInLaTeX(swapDollar, label) {
             return '$\\mid$';
         } else if (label == '-') {
             return '$\\relbar$';
+        } else if (label == '#') {
+            return '\\#';
         } else {
             return label;
         }
