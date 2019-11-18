@@ -29,4 +29,158 @@
     \label{graph:Gleich_viele_a's_wie_b's_als_DKA}
 \end{figure}
 
+\begin{figure}
+	\centering
+	\begin{transitiongraph}[pa]
+		\state[s]{START}{0}{-60}
+		\state{q1}{35.455}{-43.636}
+		\state[f]{END}{120}{0}
+		\state{q2}{79.091}{0}
+		\state{q0}{0}{0}
+		\transition{START}{q0}{\#,,!\#}
+		\transition{q1}{q2}{!,,}
+		\transition{q1}{q1}{K,),}
+		\transition{END}{END}{\#,,;!,,;K,,}
+		\transition{q2}{END}{\#,,;!,,;K,,}
+		\transition{q0}{q0}{!,(,K!;K,(,KK}
+		\transition{q0}{q2}{!,,}
+		\transition{q0}{q1}{K,),;!,),}
+	\end{transitiongraph}
+	\caption{Klammer-CW}
+	\label{graph:Klammer-CW}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{transitiongraph}[fa]
+        \state[s]{q0}{0}{0}
+        \state{q3}{0}{-55.135}
+        \state{q4}{55.135}{-55.135}
+        \state{q5}{116.757}{-55.135}
+        \state{q1}{55.135}{0}
+        \state[f]{q2}{120}{0}
+        \transition{q0}{q3}{a}
+        \transition[line=left]{q0}{q4}{a}
+        \transition[line=left]{q0}{q2}{b}
+        \transition{q3}{q4}{b;a}
+        \transition[line=left]{q3}{q2}{b}
+        \transition[line=bot]{q5}{q5}{a}
+        \transition[line=left]{q1}{q4}{a}
+        \transition{q1}{q2}{b}
+    \end{transitiongraph}
+    \caption{NEAeps-LV 9}
+    \label{graph:anders-LV_9}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{transitiongraph}[fa]
+        \state[s]{q0}{0}{0}
+        \state{q3}{0}{-55.135}
+        \state{q4}{55.135}{-55.135}
+        \state{q5}{116.757}{-55.135}
+        \state{q1}{55.135}{0}
+        \state[f]{q2}{120}{0}
+        \transition{q0}{q3}{a}
+        \transition[line=left]{q0}{q4}{a}
+        \transition[line=left]{q0}{q2}{b}
+        \transition{q3}{q4}{b;a}
+        \transition[line=left]{q3}{q2}{b}
+        \transition[line=bot]{q5}{q5}{a}
+        \transition[line=left]{q1}{q4}{a}
+        \transition{q1}{q2}{b}
+    \end{transitiongraph}
+    \caption{NEAeps-LV 9}
+    \label{graph:NEAeps-LV_9}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{transitiongraph}[fa]
+        \state[s]{q1}{0}{0}
+        \state[f]{q2}{40.909}{0}
+        \state{q3}{0}{-40.909}
+        \state{q4}{81.818}{0}
+        \state[f]{q5}{81.818}{-40.909}
+        \state[f]{q6}{120}{0}
+        \transition{q1}{q3}{b}
+        \transition{q1}{q2}{a}
+        \transition{q2}{q2}{a}
+        \transition[line=left]{q2}{q4}{b}
+        \transition{q3}{q5}{b}
+        \transition[line=left]{q3}{q4}{a}
+        \transition{q4}{q6}{b}
+        \transition[line=left]{q4}{q3}{a}
+        \transition{q5}{q4}{b}
+        \transition[line=bot]{q5}{q5}{a}
+        \transition{q6}{q6}{a;b}
+    \end{transitiongraph}
+    \caption{MinimalDEA Testbeispiel}
+    \label{graph:MinimalDEA_Testbeispiel}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{transitiongraph}[fa]
+        \state[s]{q0}{0}{0}
+        \state{q3}{0}{-55.135}
+        \state{q4}{55.135}{-55.135}
+        \state{q5}{116.757}{-55.135}
+        \state{q1}{55.135}{0}
+        \state[f]{q2}{120}{0}
+        \transition{q0}{q3}{a}
+        \transition[line=left]{q0}{q4}{a}
+        \transition[line=left]{q0}{q2}{b}
+        \transition{q3}{q4}{b;a}
+        \transition[line=left]{q3}{q2}{b}
+        \transition[line=bot]{q5}{q5}{a}
+        \transition[line=left]{q1}{q4}{a}
+        \transition{q1}{q2}{b}
+    \end{transitiongraph}
+    \caption{NEAeps-LV 9}
+    \label{graph:NEAekidfifeps-LV_9}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{transitiongraph}[fa]
+        \state[s]{q0+q2}{0}{0}
+        \state{q3+q1}{66}{0}
+        \state[f]{q4}{120}{0}
+        \transition{q0+q2}{q0+q2}{1}
+        \transition[line=left]{q0+q2}{q3+q1}{0}
+        \transition[line=left]{q3+q1}{q0+q2}{1}
+        \transition{q3+q1}{q4}{0}
+        \transition[line=bot]{q4}{q4}{0;1}
+    \end{transitiongraph}
+    \caption{In w kommt 00 vor}
+    \label{graph:In_w_kommt_00_vor}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{transitiongraph}[tm]
+        \state[s]{q0}{0}{-19.286}
+        \state{q3}{120}{0}
+        \state[f]{q6}{30}{-38.571}
+        \state{q5}{0}{-60}
+        \state{q1}{34.286}{0}
+        \state{q4}{120}{-60}
+        \state{q2}{81.429}{0}
+        \transition{q0}{q1}{1,\$,R}
+        \transition{q0}{q6}{\$,\$,R}
+        \transition{q3}{q4}{\$,1,L}
+        \transition[line=left]{q5}{q5}{1,1,L}
+        \transition{q5}{q0}{\$,\$,R}
+        \transition{q1}{q1}{1,1,R}
+        \transition{q1}{q2}{\$,\$,R}
+        \transition{q4}{q5}{\$,\$,L}
+        \transition[line=bot]{q4}{q4}{1,1,L}
+        \transition{q2}{q2}{1,1,R}
+        \transition{q2}{q3}{\$,1,R}
+    \end{transitiongraph}
+    \caption{Verdopplungsmaschine}
+    \label{graph:Verdopplungsmaschine}
+\end{figure}
+
 \end{document}
